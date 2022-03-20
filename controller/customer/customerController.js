@@ -140,6 +140,7 @@ exports.verifyOTP = (request, response) => {
         }
     })
     .catch(err => {
+        console.log("Error in outer catch: ",err)
         return response.status(500).json({msg: "Invalid Email."})
     })
 }
