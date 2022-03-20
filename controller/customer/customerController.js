@@ -23,6 +23,7 @@ exports.Register = (request, response) => {
             email: request.body.email,
             mobile: request.body.mobile,
             password: hash,
+            otp: ""
         })
             .then(result => {
                 let mailDetails = {
@@ -106,7 +107,7 @@ exports.forgotPassword = async (request, response) => {
                 console.log('Email sent successfully');
             }
         });
-        customer.create({
+        customer.updateOne({
             otp: rString
         }).then(result => {
             console.log("rString Result: "+result)
