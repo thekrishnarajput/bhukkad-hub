@@ -122,3 +122,24 @@ exports.forgotPassword = async (request, response) => {
             return response.status(500).json({ msg: "Invalid Email" })
         })
 }
+
+exports.verifyOTP = (request, response) => {
+    customer.findOne(request.body.email)
+    .then(result => {
+        console.log("Database OTP: " + result.otp)
+        if(result.otp === request.body.otp) {
+            customer.updateOne({$set:{password: request.body.newPassword}}).then(result => {
+                return response.status(200).json({msg: "Your Password has been updated successfully."})
+            }).catch(err => {
+                console.log("Error in IF OTP: "+err)
+                return response.status(500).json({err})
+            })
+        }
+        else {
+            return response.status(500).json({msg: "Invalid OTP, Please try again."})
+        }
+    })
+    .catch(err => {
+        return response.status(500).json({msg: "Invalid Email."})
+    })
+}

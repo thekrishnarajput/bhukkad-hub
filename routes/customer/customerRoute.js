@@ -19,4 +19,7 @@ router.post('/forgot-password', body('email', 'Invalid Email').isEmail(),
     customerController.forgotPassword
 )
 
+router.post('/verify-otp', customerController.verifyOTP
+)
+
 module.exports = router
