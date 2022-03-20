@@ -127,9 +127,12 @@ exports.verifyOTP = (request, response) => {
     .then(result => {
         console.log("Database OTP: " + result.otp)
         if(result.otp === request.body.otp) {
-            customer.updateOne({$set:{password: request.body.newPassword}}).then(result => {
+            customer.updateOne({email: request.body.email},{$set:{password: request.body.newPassword, otp: ""}})
+            .then(result => {
+                console.log("UpdateOne Result: "+result)
                 return response.status(200).json({msg: "Your Password has been updated successfully."})
-            }).catch(err => {
+            })
+            .catch(err => {
                 console.log("Error in IF OTP: "+err)
                 return response.status(500).json({err})
             })
