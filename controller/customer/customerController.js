@@ -107,9 +107,8 @@ exports.forgotPassword = async (request, response) => {
                 console.log('Email sent successfully');
             }
         });
-        customer.updateOne({
-            otp: rString
-        }).then(result => {
+        customer.updateOne({email: request.body.email},{$set:{otp: rString}})
+        .then(result => {
             console.log("rString Result: "+result)
             return response.status(200).json({ msg: "Password reset email sent successfully! Check your inbox." })
            //  return response.status(200).json(result)
