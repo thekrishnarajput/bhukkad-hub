@@ -34,11 +34,9 @@ exports.Login = async (request, response) => {
     })
         .then(result => {
             console.log("Then result ", result)
-            const email = (request.body.email === result.email)
-            console.log("Email Matching ", email)
             bcrypt.compare(request.body.password, result.password, function (err, res) {
-                if (res && email) {
-                    console.log("compare res ", res)
+                console.log("compare res ", res)
+                if (res) {
                     return response.status(200).json({ msg: "Welcome Mr. " + result.name })
                 }
                 else {
@@ -48,6 +46,6 @@ exports.Login = async (request, response) => {
             })
         })
         .catch(err => {
-            return response.status(500).json({ msg: "Error in catch" })
+            return response.status(500).json({ msg: "Invalid Email" })
         })
 }
