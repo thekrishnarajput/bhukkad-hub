@@ -89,7 +89,7 @@ exports.forgotPassword = async (request, response) => {
             return results;
         }
         var rString = randomString(6, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
-        console.log(rString)
+        console.log("output"+rString);
         let mailDetails = {
             from: '"Bhukkad Hub 👻" <geekhunters001@gmail.com>', // sender address
             to: result.email, // list of receivers
