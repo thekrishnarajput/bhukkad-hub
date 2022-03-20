@@ -116,7 +116,6 @@ exports.forgotPassword = async (request, response) => {
         .catch(err => {
             return response.status(500).json({msg: "OTP not saved"})
         })
-       
     })
         .catch(err => {
             return response.status(500).json({ msg: "Invalid Email" })
@@ -124,7 +123,7 @@ exports.forgotPassword = async (request, response) => {
 }
 
 exports.verifyOTP = (request, response) => {
-    customer.findOne(request.body.email)
+    customer.findOne({email: request.body.email})
     .then(result => {
         console.log("Database OTP: " + result.otp)
         if(result.otp === request.body.otp) {
