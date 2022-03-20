@@ -25,8 +25,8 @@ router.post('/add-category', upload.single('catImage'),
 
 router.get('/view-category', categoryController.viewCategory)
 
-router.post('/edit-category:catId', upload.single('catImage'), categoryController.editCategory)
+router.post('/edit-category/:catId', upload.single('catImage'), categoryController.editCategory)
 
-router.post('/delete-category:catId', categoryController.deleteCategory)
+router.post('/delete-category/:catId', categoryController.deleteCategory)
 
 module.exports = router
