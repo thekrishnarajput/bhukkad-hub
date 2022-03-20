@@ -17,7 +17,7 @@ exports.Register = (request, response) => {
     if (!errors.isEmpty()) {
         return response.status(403).json({ errors: errors.array() })
     }
-    bcrypt.hash(request.body.password, 8, function (error, hash) {
+    bcrypt.hash(request.body.password, 10, function (error, hash) {
         customer.create({
             name: request.body.name,
             email: request.body.email,
@@ -90,7 +90,7 @@ exports.forgotPassword = async (request, response) => {
             return results;
         }
         var rString = randomString(6, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
-        console.log("output"+rString);
+        console.log("output" + rString);
         let mailDetails = {
             from: '"Bhukkad Hub 👻" <geekhunters001@gmail.com>', // sender address
             to: "devikakushwah29@gmail.com", // list of receivers
@@ -107,15 +107,15 @@ exports.forgotPassword = async (request, response) => {
                 console.log('Email sent successfully');
             }
         });
-        customer.updateOne({email: request.body.email},{$set:{otp: rString}})
-        .then(result => {
-            console.log("rString Result: "+result)
-            return response.status(200).json({ msg: "Password reset email sent successfully! Check your inbox." })
-           //  return response.status(200).json(result)
-        })
-        .catch(err => {
-            return response.status(500).json({msg: "OTP not saved"})
-        })
+        customer.updateOne({ email: request.body.email }, { $set: { otp: rString } })
+            .then(result => {
+                console.log("rString Result: " + result)
+                return response.status(200).json({ msg: "Password reset email sent successfully! Check your inbox." })
+                //  return response.status(200).json(result)
+            })
+            .catch(err => {
+                return response.status(500).json({ msg: "OTP not saved" })
+            })
     })
         .catch(err => {
             return response.status(500).json({ msg: "Invalid Email" })
@@ -123,26 +123,40 @@ exports.forgotPassword = async (request, response) => {
 }
 
 exports.verifyOTP = (request, response) => {
-    customer.findOne({email: request.body.email})
-    .then(result => {
-        console.log("Database OTP: " + result.otp)
-        if(result.otp === request.body.otp) {
-            customer.updateOne({email: request.body.email},{$set:{password: request.body.newPassword, otp: ""}})
-            .then(result => {
-                console.log("UpdateOne Result: "+result)
-                return response.status(200).json({msg: "Your Password has been updated successfully."})
-            })
-            .catch(err => {
-                console.log("Error in IF OTP: "+err)
-                return response.status(500).json({err})
-            })
-        }
-        else {
-            return response.status(500).json({msg: "Invalid OTP, Please try again."})
-        }
-    })
-    .catch(err => {
-        console.log("Error in outer catch: ",err)
-        return response.status(500).json({msg: "Invalid Email."})
-    })
+    customer.findOne({ email: request.body.email })
+        .then(result => {
+            console.log("Database OTP: " + result.otp)
+            if (result.otp === request.body.otp) {
+                bcrypt.hash(request.body.newPassword, 10, (error, hash) => {
+                    if (!error) {
+                        customer.updateOne({
+                            email: request.body.email
+                        },
+                            {
+                                $set: {
+                                    password: hash,
+                                    otp: ""
+                                }
+                            })
+                            .then(result => {
+                                console.log("UpdateOne Result: " + result)
+                                return response.status(200).json({ msg: "Your Password has been updated successfully." })
+                            })
+                            .catch(err => {
+                                console.log("Error in IF OTP: " + err)
+                                return response.status(500).json({ err })
+                            })
+                    }
+                    else
+                        console.log("Hashing Error: " + error)
+                })
+            }
+            else {
+                return response.status(500).json({ msg: "Invalid OTP, Please try again." })
+            }
+        })
+        .catch(err => {
+            console.log("Error in outer catch: ", err)
+            return response.status(500).json({ msg: "Invalid Email." })
+        })
 }

@@ -1,8 +1,9 @@
 const mongoose = require('mongoose')
-const server = "localhost"
+require('dotenv').config()
+const server = "bhukkad-hub.heroku.com"
 const db = "bhukkad-hub"
 const port = process.env.PORT || 8080
-const url = "mongodb+srv://thekrishnarajput:Krish%40143@practice.h6lsp.mongodb.net/bhukkad-hub?retryWrites=true&w=majority"
+const url = "mongodb+srv://thekrishnarajput:mongoPassword@practice.h6lsp.mongodb.net/bhukkad-hub?retryWrites=true&w=majority"
 
 class Database {
 
