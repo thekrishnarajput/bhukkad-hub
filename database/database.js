@@ -1,9 +1,11 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
+const mongoPassword = process.env.MONGO_PASSWORD
+const mongoUser = process.env.MONGO_USER
+const db = process.env.MONGO_DB
 const server = "bhukkad-hub.heroku.com"
-const db = "bhukkad-hub"
 const port = process.env.PORT || 8080
-const url = "mongodb+srv://thekrishnarajput:mongoPassword@practice.h6lsp.mongodb.net/bhukkad-hub?retryWrites=true&w=majority"
+const url = "mongodb+srv://"+mongoUser+":"+mongoPassword+"@practice.h6lsp.mongodb.net/"+db+"?retryWrites=true&w=majority"
 
 class Database {
 
