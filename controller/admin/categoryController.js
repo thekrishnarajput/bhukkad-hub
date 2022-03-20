@@ -29,7 +29,7 @@ exports.viewCategory = (request, response) => {
 exports.editCategory = (request, response) => {
     category.updateOne({_id: request.params.catId},{$set:{
         catName: request.body.catName,
-        catImage: "https://bhukkad-hub.herokuapp.com/admin/category/media" + request.file.filename
+        catImage: "https://bhukkad-hub.herokuapp.com/admin/category/media/" + request.file.filename
     }})
     .then(result => {
         return response.status(200).json(result)
