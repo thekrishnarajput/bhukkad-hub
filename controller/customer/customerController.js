@@ -114,7 +114,7 @@ exports.forgotPassword = async (request, response) => {
            //  return response.status(200).json(result)
         })
         .catch(err => {
-            return resonse.status(500).json({msg: "OTP not saved"})
+            return response.status(500).json({msg: "OTP not saved"})
         })
        
     })
