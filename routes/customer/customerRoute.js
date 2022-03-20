@@ -9,10 +9,15 @@ router.post('/login', body('email', 'Invalid Email').isEmail(),
 )
 
 router.post('/register', body('name').isAlpha().not().isEmpty(),
-    body('email').isEmail().not().isEmpty(),
+body('email').isEmail().not().isEmpty(),
+body('password').not().isEmpty(),
+body('mobile').isNumeric().not().isEmpty(),
+customerController.Register
+)
+
+router.post('/forgot-password', body('email', 'Invalid Email').isEmail(),
     body('password').not().isEmpty(),
-    body('mobile').isNumeric().not().isEmpty(),
-    customerController.Register
+    customerController.forgotPassword
 )
 
 module.exports = router

@@ -30,7 +30,9 @@ exports.Register = (request, response) => {
                     to: result.email, // list of receivers
                     subject: "Registration Verification", // Subject line
                     text: "Registration Successful", // plain text body
-                    html: "<b>Congratulations" + result.name + "! Your account has been created successfully on <h3>Bhukkad Hub </h3></b>",
+                    html: "<b>Congratulations " + result.name + "! Your account has been created successfully on" +
+                        "<h3><a href='https://bhukkad-hub.herokuapp.com'>Bhukkad Hub</a></h3></b>" +
+                        "<b>Regards<br><h5>Bhukkad Hub</h5></b>"
                 }
                 mailTransporter.sendMail(mailDetails, function (err, data) {
                     if (err) {
@@ -68,6 +70,46 @@ exports.Login = async (request, response) => {
                 }
             })
         })
+        .catch(err => {
+            return response.status(500).json({ msg: "Invalid Email" })
+        })
+}
+
+exports.forgotPassword = async (request, response) => {
+    const errors = validationResult(request)
+    if (!errors.isEmpty()) {
+        return response.status(403).json({ errors: errors.array() })
+    }
+    await customer.findOne({
+        email: request.body.email
+    }).then(result => {
+        function randomString(length, chars) {
+            var result = '';
+            for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+            return result;
+        }
+        var rString = randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        let mailDetails = {
+            from: '"Bhukkad Hub 👻" <geekhunters001@gmail.com>', // sender address
+            to: result.email, // list of receivers
+            subject: "Forgot Password", // Subject line
+            text: "Registration Successful", // plain text body
+            html: "<b>Hey " + result.name + "! Here is the otp: " + rString +
+                "<h3><a href='https://bhukkad-hub.herokuapp.com'>Bhukkad Hub</a></h3></b>" +
+                "<b>Regards<br><h5>Bhukkad Hub</h5></b>"
+        }
+        mailTransporter.sendMail(mailDetails, function (err, data) {
+            if (err) {
+                console.log('Error Occurs');
+            } else {
+                console.log('Email sent successfully');
+            }
+        });
+        customer.create({
+            otp: rString
+        })
+        return response.status(200).json({ msg: "Password reset email sent successfully! Check your inbox." })
+    })
         .catch(err => {
             return response.status(500).json({ msg: "Invalid Email" })
         })
