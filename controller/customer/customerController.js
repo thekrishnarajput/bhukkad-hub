@@ -14,13 +14,13 @@ let mailTransporter = nodemailer.createTransport({
     }
 });
 
-exports.Register = async (request, response) => {
+exports.Register = (request, response) => {
     const errors = validationResult(request)
     if (!errors.isEmpty()) {
         return response.status(403).json({ errors: errors.array() })
     }
     bcrypt.hash(request.body.password, 10, function (error, hash) {
-        await customer.create({
+        customer.create({
             name: request.body.name,
             email: request.body.email,
             mobile: request.body.mobile,
