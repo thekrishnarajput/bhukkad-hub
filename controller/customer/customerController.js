@@ -20,7 +20,7 @@ exports.Register = async (request, response) => {
         return response.status(403).json({ errors: errors.array() })
     }
     bcrypt.hash(request.body.password, 10, function (error, hash) {
-        customer.create({
+        await customer.create({
             name: request.body.name,
             email: request.body.email,
             mobile: request.body.mobile,
@@ -44,7 +44,6 @@ exports.Register = async (request, response) => {
                         console.log('Email sent successfully');
                     }
                 });
-                return response.status(200).json({ msg: "Congratulations Mr. :" + result.name + ", Your account has been created successfully" })
                 console.log("Customer ID: "+result._id)
                 await profile.create({
                     customers: result._id,
@@ -55,6 +54,7 @@ exports.Register = async (request, response) => {
                     location: "",
                     bio: ""
                 })
+                return response.status(200).json({ msg: "Congratulations Mr. :" + result.name + ", Your account has been created successfully" })
             })
             .catch(err => {
                 return response.status(500).json({ msg: err.message })
