@@ -93,7 +93,7 @@ exports.forgotPassword = async (request, response) => {
         console.log("output" + rString);
         let mailDetails = {
             from: '"Bhukkad Hub 👻" <geekhunters001@gmail.com>', // sender address
-            to: "devikakushwah29@gmail.com", // list of receivers
+            to: result.email, // list of receivers
             subject: "Forgot Password", // Subject line
             text: "Registration Successful", // plain text body
             html: "<b>Hey " + result.name + "! Here is the otp: " + rString +
