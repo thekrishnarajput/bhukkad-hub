@@ -95,7 +95,7 @@ exports.forgotPassword = async (request, response) => {
             subject: "Forgot Password", // Subject line
             text: "Registration Successful", // plain text body
             html: "<b>Hey " + result.name + "! Here is the otp: " + rString +
-                "<h3><a href='https://bhukkad-hub.herokuapp.com'>Bhukkad Hub</a></h3></b>" +
+                "<h3><a href='https://bhukkad-hub.herokuapp.com'> Bhukkad Hub</a></h3></b>" +
                 "<b>Regards<br><h5>Bhukkad Hub</h5></b>"
         }
         mailTransporter.sendMail(mailDetails, function (err, data) {

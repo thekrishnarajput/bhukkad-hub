@@ -16,7 +16,6 @@ customerController.Register
 )
 
 router.post('/forgot-password', body('email', 'Invalid Email').isEmail(),
-    body('password').not().isEmpty(),
     customerController.forgotPassword
 )
 
