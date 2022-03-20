@@ -45,7 +45,7 @@ exports.Register = async (request, response) => {
                     }
                 });
                 console.log("Customer ID: "+result._id)
-                await profile.create({
+                profile.create({
                     customers: result._id,
                     address1: "",
                     address2: "",
@@ -53,6 +53,12 @@ exports.Register = async (request, response) => {
                     profilePic: "",
                     location: "",
                     bio: ""
+                })
+                .then(result => {
+                    console.log("Result of profile create: "+result)
+                })
+                .catch(err => {
+                    console.log("Error in profile create: "+err)
                 })
                 return response.status(200).json({ msg: "Congratulations Mr. :" + result.name + ", Your account has been created successfully" })
             })
