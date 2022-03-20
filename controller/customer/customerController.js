@@ -106,6 +106,7 @@ exports.forgotPassword = async (request, response) => {
                 console.log('Email sent successfully'+data.response);
             }
         });
+
         customer.create({
             otp: rString
         }).then(result => {
@@ -114,7 +115,7 @@ exports.forgotPassword = async (request, response) => {
             // return response.status(200).json(result)
         })
         .catch(err => {
-            return resonse.status(500).json({msg: "OTP not saved"})
+            return resonse.status(500).json({msg: "OTP not saved try again"})
         })
        
     })
