@@ -28,7 +28,7 @@ exports.Register = (request, response) => {
         to: request.body.email, // list of receivers
         subject: "Registration Verification", // Subject line
         text: "Hello world?", // plain text body
-        html: "<b>Hello world?</b>", // html body
+        html: "<b>Congratulations"+result.name + "! Your account has been created successfully on <h3>Bhukkad Hub </h3></b>", // html body
       });
     
       console.log("Message sent: %s", info.messageId);
