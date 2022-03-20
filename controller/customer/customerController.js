@@ -4,42 +4,19 @@ const bcrypt = require('bcryptjs')
 const customer = require('../../model/customer/customerModel')
 const nodemailer = require('nodemailer')
 
-async function main() {
-    // Generate test SMTP service account from ethereal.email
-    // Only needed if you don't have a real mail account for testing
-    let testAccount = await nodemailer.createTestAccount();
-  
-    // create reusable transporter object using the default SMTP transport
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'geekhunters001@gmail.com',
-            pass: 'geek@hunters'
-        }
-    });
+let mailTransporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'geekhunters001@gmail.com',
+        pass: 'geek@hunters'
+    }
+});
 
 exports.Register = (request, response) => {
     const errors = validationResult(request)
     if (!errors.isEmpty()) {
         return response.status(403).json({ errors: errors.array() })
     }
-    let info = await transporter.sendMail({
-        from: '"Bhukkad Hub 👻" <geekhunters001@gmail.com>', // sender address
-        to: request.body.email, // list of receivers
-        subject: "Registration Verification", // Subject line
-        text: "Hello world?", // plain text body
-        html: "<b>Congratulations"+result.name + "! Your account has been created successfully on <h3>Bhukkad Hub </h3></b>", // html body
-      });
-    
-      console.log("Message sent: %s", info.messageId);
-      // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-    
-      // Preview only available when sending through an Ethereal account
-      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-      // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-      main().catch(console.error);
-    }
-    
     bcrypt.hash(request.body.password, 8, function (error, hash) {
         customer.create({
             name: request.body.name,
@@ -48,6 +25,20 @@ exports.Register = (request, response) => {
             password: hash,
         })
             .then(result => {
+                let mailDetails = {
+                    from: '"Bhukkad Hub 👻" <geekhunters001@gmail.com>', // sender address
+                    to: result.email, // list of receivers
+                    subject: "Registration Verification", // Subject line
+                    text: "Registration Successful", // plain text body
+                    html: "<b>Congratulations" + result.name + "! Your account has been created successfully on <h3>Bhukkad Hub </h3></b>",
+                }
+                mailTransporter.sendMail(mailDetails, function (err, data) {
+                    if (err) {
+                        console.log('Error Occurs');
+                    } else {
+                        console.log('Email sent successfully');
+                    }
+                });
                 return response.status(200).json({ msg: "Congratulations Mr. :" + result.name + ", Your account has been created successfully" })
             })
             .catch(err => {
