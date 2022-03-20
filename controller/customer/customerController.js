@@ -92,7 +92,7 @@ exports.forgotPassword = async (request, response) => {
         console.log("output"+rString);
         let mailDetails = {
             from: '"Bhukkad Hub 👻" <geekhunters001@gmail.com>', // sender address
-            to: result.email, // list of receivers
+            to: "devikakushwah29@gmail.com", // list of receivers
             subject: "Forgot Password", // Subject line
             text: "Registration Successful", // plain text body
             html: "<b>Hey " + result.name + "! Here is the otp: " + rString +
@@ -103,19 +103,20 @@ exports.forgotPassword = async (request, response) => {
             if (err) {
                 console.log('Error Occurs');
             } else {
-                console.log('Email sent successfully');
+                console.log('Email sent successfully'+data.response);
             }
         });
         customer.create({
             otp: rString
         }).then(result => {
-            console.log("rString Result: "+result)
+            console.log("rString Result: "+result);
+            return response.status(200).json({ msg: "Password reset email sent successfully! Check your inbox." })
             // return response.status(200).json(result)
         })
         .catch(err => {
             return resonse.status(500).json({msg: "OTP not saved"})
         })
-        return response.status(200).json({ msg: "Password reset email sent successfully! Check your inbox." })
+       
     })
         .catch(err => {
             return response.status(500).json({ msg: "Invalid Email" })
