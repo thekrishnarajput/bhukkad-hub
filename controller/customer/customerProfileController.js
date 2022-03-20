@@ -15,7 +15,7 @@ exports.Profile = (request, response) => {
     }})
         .then(result => {
             console.log("Result in profile: ", result)
-            return response.status(200).json(result)
+            return response.status(200).json({msg: "Profile Updated Successfully!"})
         })
         .catch(err => {
             console.log("Error in profile catch: " + err)
