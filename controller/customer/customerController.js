@@ -110,12 +110,13 @@ exports.forgotPassword = async (request, response) => {
             otp: rString
         }).then(result => {
             console.log("rString Result: "+result)
-             return response.status(200).json(result)
+            return response.status(200).json({ msg: "Password reset email sent successfully! Check your inbox." })
+           //  return response.status(200).json(result)
         })
         .catch(err => {
             return resonse.status(500).json({msg: "OTP not saved"})
         })
-        return response.status(200).json({ msg: "Password reset email sent successfully! Check your inbox." })
+       
     })
         .catch(err => {
             return response.status(500).json({ msg: "Invalid Email" })
