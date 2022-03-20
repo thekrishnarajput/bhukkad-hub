@@ -5,7 +5,7 @@ const category = require('../../model/admin/categoryModel')
 exports.addCategory = (request, response) => {
     category.create({
         catName: request.body.catName,
-        catImage: "https://bhukkad-hub.herokuapp.com/admin/category/media" + request.file.filename
+        catImage: "https://bhukkad-hub.herokuapp.com/admin/category/media/" + request.file.filename
     })
     .then(result => {
         return response.status(200).json(result)
