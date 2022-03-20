@@ -2,17 +2,19 @@ const { json } = require('body-parser')
 const { validationResult } = require('express-validator')
 const bcrypt = require('bcryptjs')
 const customer = require('../../model/customer/customerModel')
+const profile = require('../../model/customer/customerProfileModel')
 const nodemailer = require('nodemailer')
+require('dotenv').config()
 
 let mailTransporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'geekhunters001@gmail.com',
-        pass: 'geek@hunters'
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD
     }
 });
 
-exports.Register = (request, response) => {
+exports.Register = async (request, response) => {
     const errors = validationResult(request)
     if (!errors.isEmpty()) {
         return response.status(403).json({ errors: errors.array() })
@@ -43,6 +45,16 @@ exports.Register = (request, response) => {
                     }
                 });
                 return response.status(200).json({ msg: "Congratulations Mr. :" + result.name + ", Your account has been created successfully" })
+                console.log("Customer ID: "+result._id)
+                await profile.create({
+                    customers: result._id,
+                    address1: "",
+                    address2: "",
+                    address3: "",
+                    profilePic: "",
+                    location: "",
+                    bio: ""
+                })
             })
             .catch(err => {
                 return response.status(500).json({ msg: err.message })
