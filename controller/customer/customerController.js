@@ -84,11 +84,12 @@ exports.forgotPassword = async (request, response) => {
         email: request.body.email
     }).then(result => {
         function randomString(length, chars) {
-            var result = '';
-            for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
-            return result;
+            var results = '';
+            for (var i = length; i > 0; --i) results += chars[Math.floor(Math.random() * chars.length)]
+            return results;
         }
-        var rString = randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        var rString = randomString(6, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+        console.log(rString)
         let mailDetails = {
             from: '"Bhukkad Hub 👻" <geekhunters001@gmail.com>', // sender address
             to: result.email, // list of receivers
@@ -107,6 +108,12 @@ exports.forgotPassword = async (request, response) => {
         });
         customer.create({
             otp: rString
+        }).then(result => {
+            console.log("rString Result: "+result)
+            // return response.status(200).json(result)
+        })
+        .catch(err => {
+            return resonse.status(500).json({msg: "OTP not saved"})
         })
         return response.status(200).json({ msg: "Password reset email sent successfully! Check your inbox." })
     })

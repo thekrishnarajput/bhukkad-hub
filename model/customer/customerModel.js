@@ -32,7 +32,8 @@ const customerSchema = new mongoose.Schema({
     createdAt:{
         type: Date,
         default: Date.now(),
-    }
+    },
+    otp: {type: String}
 })
 
 module.exports = mongoose.model('customers', customerSchema)
