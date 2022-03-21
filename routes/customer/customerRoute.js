@@ -2,8 +2,6 @@ const express = require('express')
 const router = express.Router()
 const {body} = require('express-validator')
 const multer = require('multer')
-const auth = require('../../middleware/customer/auth')
-require('dotenv').config()
 
 
 const customerController = require('../../controller/customer/customerController')
@@ -26,7 +24,7 @@ body('mobile').isNumeric().not().isEmpty(),
 customerController.Register
 )
 
-router.post('/login', auth, body('email', 'Invalid Email').isEmail(),
+router.post('/login', body('email', 'Invalid Email').isEmail(),
     body('password').not().isEmpty(),
     customerController.Login
 )
@@ -35,8 +33,9 @@ router.post('/forgot-password', body('email', 'Invalid Email').isEmail(),
     customerController.forgotPassword
 )
 
-router.post('/verify-otp', customerController.verifyOTP
-)
+router.post('/verify-otp', customerController.verifyOTP)
+
+router.post('/verify-email', customerController.verifyEmail)
 
 router.post('/profile', upload.single('profilePic'), customerProfileController.Profile)
 
