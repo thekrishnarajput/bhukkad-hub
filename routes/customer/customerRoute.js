@@ -19,7 +19,7 @@ var storage = multer.diskStorage({
 
 let upload = multer({storage: storage})
 
-router.post('/register', auth, body('name').isAlpha(),
+router.post('/register', body('name').isAlpha(),
 body('email').isEmail().not().isEmpty(),
 body('password').not().isEmpty(),
 body('mobile').isNumeric().not().isEmpty(),
