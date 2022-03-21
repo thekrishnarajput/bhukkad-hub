@@ -1,17 +1,17 @@
 const mongoose = require('mongoose')
 
 const customerSchema = new mongoose.Schema({
-    name:{
+    name: {
         type: String,
         required: true,
     },
-    email:{
+    email: {
         type: String,
         required: true,
         unique: true,
         trim: true,
     },
-    mobile:{
+    mobile: {
         type: String,
         required: true,
         unique: true,
@@ -19,21 +19,22 @@ const customerSchema = new mongoose.Schema({
         min: 10,
         max: 10
     },
-    password:{
+    password: {
         type: String,
         required: true,
         trim: true,
         min: 4
     },
-    status:{
+    status: {
         type: Boolean,
         default: false
     },
-    createdAt:{
+    createdAt: {
         type: Date,
         default: Date.now(),
     },
-    otp: {type: String}
+    otp: { type: String },
+    token: { type: String }
 })
 
 module.exports = mongoose.model('customers', customerSchema)

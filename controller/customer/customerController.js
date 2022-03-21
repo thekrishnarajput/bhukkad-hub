@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs')
 const customer = require('../../model/customer/customerModel')
 const profile = require('../../model/customer/customerProfileModel')
 const nodemailer = require('nodemailer')
+const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 let mailTransporter = nodemailer.createTransport({
@@ -14,58 +15,70 @@ let mailTransporter = nodemailer.createTransport({
     }
 });
 
-exports.Register = (request, response) => {
+exports.Register = async (request, response) => {
     const errors = validationResult(request)
     if (!errors.isEmpty()) {
         return response.status(403).json({ errors: errors.array() })
     }
-    bcrypt.hash(request.body.password, 10, function (error, hash) {
-        customer.create({
-            name: request.body.name,
-            email: request.body.email,
-            mobile: request.body.mobile,
-            password: hash,
-            otp: ""
-        })
-            .then(result => {
-                let mailDetails = {
-                    from: '"Bhukkad Hub 👻" <geekhunters001@gmail.com>', // sender address
-                    to: result.email, // list of receivers
-                    subject: "Registration Verification", // Subject line
-                    text: "Registration Successful", // plain text body
-                    html: "<b>Congratulations " + result.name + "! Your account has been created successfully on" +
-                        "<h3><a href='https://bhukkad-hub.herokuapp.com'>Bhukkad Hub</a></h3></b>" +
-                        "<b>Regards<br><h5>Bhukkad Hub</h5></b>"
+    const { name, email, mobile, password } = request.body
+    const oldCustomer = await customer.findOne({ email })
+    if (oldCustomer) {
+        return response.status(409).json({ msg: "This email is already associated with another account. Try another one." })
+    }
+    const hash = await bcrypt.hash(password, 10)
+    customer.create({
+        name: name,
+        email: email,
+        mobile: mobile,
+        password: hash,
+        otp: ""
+    })
+        .then(result => {
+            let mailDetails = {
+                from: '"Bhukkad Hub 👻" <geekhunters001@gmail.com>', // sender address
+                to: result.email, // list of receivers
+                subject: "Registration Verification", // Subject line
+                text: "Registration Successful", // plain text body
+                html: "<b>Congratulations " + result.name + "! Your account has been created successfully on" +
+                    "<h3><a href='https://bhukkad-hub.herokuapp.com'>Bhukkad Hub</a></h3></b>" +
+                    "<b>Regards<br><h5>Bhukkad Hub</h5></b>"
+            }
+            mailTransporter.sendMail(mailDetails, function (err, data) {
+                if (err) {
+                    console.log('Error Occurs');
+                } else {
+                    console.log('Email sent successfully');
                 }
-                mailTransporter.sendMail(mailDetails, function (err, data) {
-                    if (err) {
-                        console.log('Error Occurs');
-                    } else {
-                        console.log('Email sent successfully');
-                    }
-                });
-                console.log("Customer ID: "+result._id)
-                profile.create({
-                    customers: result._id,
-                    address1: "",
-                    address2: "",
-                    address3: "",
-                    profilePic: "",
-                    location: "",
-                    bio: ""
-                })
+            });
+            console.log("Customer ID: " + result._id)
+            profile.create({
+                customers: result._id,
+                address1: "",
+                address2: "",
+                address3: "",
+                profilePic: "",
+                location: "",
+                bio: ""
+            })
                 .then(result => {
-                    console.log("Result of profile create: "+result)
+                    console.log("Result of profile create: " + result)
                 })
                 .catch(err => {
-                    console.log("Error in profile create: "+err)
+                    console.log("Error in profile create: " + err)
                 })
-                return response.status(200).json({ msg: "Congratulations Mr. :" + result.name + ", Your account has been created successfully" })
-            })
-            .catch(err => {
-                return response.status(500).json({ msg: err.message })
-            })
-    })
+            const token = jwt.sign(
+                { customerId: customer._id, email },
+                process.env.TOKEN_KEY,
+                {
+                    expiresIn: "2h",
+                }
+            )
+            customer.token = token;
+            return response.status(200).json({ msg: "Congratulations Mr. :" + result.name + ", Your account has been created successfully" })
+        })
+        .catch(err => {
+            return response.status(500).json({ msg: err.message })
+        })
 }
 
 exports.Login = async (request, response) => {

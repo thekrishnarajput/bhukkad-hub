@@ -32,7 +32,7 @@ exports.editCategory = (request, response) => {
         catImage: "https://bhukkad-hub.herokuapp.com/admin/category/media/" + request.file.filename
     }})
     .then(result => {
-        return response.status(200).json(result)
+        return response.status(200).json({msg: "Category has been updated successfully."})
     })
     .catch(err => {
         console.log(err)
