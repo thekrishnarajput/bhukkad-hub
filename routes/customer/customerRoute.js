@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const {body} = require('express-validator')
 const multer = require('multer')
+const auth = require('../../middleware/customer/auth')
 
 
 const customerController = require('../../controller/customer/customerController')
@@ -37,6 +38,6 @@ router.post('/verify-otp', customerController.verifyOTP)
 
 router.post('/verify-email', customerController.verifyEmail)
 
-router.post('/profile', upload.single('profilePic'), customerProfileController.Profile)
+router.post('/profile', auth, upload.single('profilePic'), customerProfileController.Profile)
 
 module.exports = router

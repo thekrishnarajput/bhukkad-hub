@@ -134,7 +134,10 @@ exports.Login = async (request, response) => {
                 console.log("compare res ", match)
                 if (match) {
                     const token = jwt.sign(
-                        { customer_id: customer._id, email },
+                        {
+                            id: result._id,
+                            email: result.email
+                        },
                         process.env.TOKEN_KEY,
                         {
                             expiresIn: "2h",

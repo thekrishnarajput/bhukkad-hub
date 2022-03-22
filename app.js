@@ -7,6 +7,7 @@ const app = express()
 
 const adminRoute = require('./routes/admin/adminRoute')
 const customerRoute = require('./routes/customer/customerRoute')
+const dishRoute = require('./routes/admin/dishRoute')
 
 app.use(express.json({ limit: "50mb" }))
 app.use(express.static(path.join(__dirname, 'public')))
@@ -16,6 +17,8 @@ app.use(bodyParser.json())
 app.use('/admin', adminRoute)
 
 app.use('/customer', customerRoute)
+
+app.use('/admin/dishes', dishRoute)
 
 const port = process.env.PORT || 8080
 app.listen(port,()=>{

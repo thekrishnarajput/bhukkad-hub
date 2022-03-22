@@ -4,8 +4,8 @@ const { validationResult } = require('express-validator')
 
 const profile = require('../../model/customer/customerProfileModel')
 
-exports.Profile = (request, response) => {
-    profile.updateOne({customers: request.body.customerId}, {$set:{
+exports.Profile = async (request, response) => {
+    await profile.updateOne({customers: request.body.customerId}, {$set:{
         address1: request.body.address1,
         address2: request.body.address2,
         address3: request.body.address3,
@@ -19,6 +19,6 @@ exports.Profile = (request, response) => {
         })
         .catch(err => {
             console.log("Error in profile catch: " + err)
-            return response.status(500).json({ msg: "Error while updating profile." })
+            return response.status(500).json({ msg: "Error while updating profile. "+err })
         })
 }
