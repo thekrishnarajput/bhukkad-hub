@@ -3,16 +3,21 @@ const { validationResult } = require('express-validator')
 
 
 const profile = require('../../model/customer/customerProfileModel')
-
 exports.Profile = async (request, response) => {
-    await profile.updateOne({customers: request.body.customerId}, {$set:{
-        address1: request.body.address1,
-        address2: request.body.address2,
-        address3: request.body.address3,
-        profilePic: "https://bhukkad-hub.herokuapp.com/customer/media/" + request.file.filename,
-        location: request.body.location,
-        bio: request.body.bio
-    }})
+    const { address1, address2, address3, location, bio } = request.body
+    await profile.updateOne({customers: request.params.id},
+        {
+            $set:
+            {
+                address1: address1,
+                address2: address2,
+                address3: address3,
+                profilePic: "https://bhukkad-hub.herokuapp.com/customer/media/" + request.file.filename,
+                location: location,
+                bio: bio,
+                updatedAt: Date.now()
+            }
+        })
         .then(result => {
             console.log("Result in profile: ", result)
             return response.status(200).json({msg: "Profile Updated Successfully!"})

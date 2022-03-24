@@ -17,6 +17,10 @@ const dishSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    qty: {
+        type: Number,
+        default: 1
+    },
     stockStatus: {
         type: String,
         default: 'Available'

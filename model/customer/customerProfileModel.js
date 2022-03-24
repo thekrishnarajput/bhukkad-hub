@@ -23,6 +23,9 @@ const profileSchema = new mongoose.Schema({
     },
     bio: {
         type: String
+    },
+    updatedAt: {
+        type: Date
     }
 })
 

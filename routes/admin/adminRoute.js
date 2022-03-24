@@ -24,7 +24,7 @@ router.post('/add-category', auth, upload.single('catImage'), categoryController
 
 router.get('/view-category', categoryController.viewCategory)
 
-router.post('/edit-category/:catId', upload.single('catImage'), categoryController.editCategory)
+router.post('/edit-category/:catId', auth, upload.single('catImage'), categoryController.editCategory)
 
 router.post('/delete-category/:catId', auth, categoryController.deleteCategory)
 

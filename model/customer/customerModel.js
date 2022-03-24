@@ -33,7 +33,14 @@ const customerSchema = new mongoose.Schema({
         type: Date,
         default: Date.now(),
     },
+    updatedAt: {
+        type: Date,
+        default: Date.now(),
+    },
     otp: {
+        type: String
+    },
+    tokens: {
         type: String
     }
 })

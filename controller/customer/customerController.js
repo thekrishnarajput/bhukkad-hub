@@ -5,6 +5,10 @@ const nodemailer = require('nodemailer')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
+const id = 'ACdf149fd0a805582d3bb78b98b26ddd12'
+const twilioToken = '9624c050222ef952f239b324b8926f26'
+const client = require('twilio')(id, twilioToken);
+
 const customer = require('../../model/customer/customerModel')
 const profile = require('../../model/customer/customerProfileModel')
 
@@ -40,7 +44,8 @@ exports.Register = async (request, response) => {
         email: email,
         mobile: mobile,
         password: hash,
-        otp: otp
+        otp: otp,
+        tokens: ""
     })
         .then(result => {
             console.log(result)
@@ -63,6 +68,25 @@ exports.Register = async (request, response) => {
                 }
             })
             console.log("Customer ID: " + result._id)
+            const recMobile = "whatsapp:+91"+result.mobile
+            console.log("Receiving mobile no.: " + recMobile)
+            client.messages.create(
+                {
+                    // Message to be sent
+                    body: "Congratulations " + result.name + "! Your account has been created successfully on"+
+                    "*Bhukkad Hub.* Your otp is: " + otp + "Click on https://bhukkad-hub.herokuapp/customer/verify-email" +
+                    "and enter the Given otp there to activate your account.",
+                    // Senders Number (Twilio Sandbox No.)
+                    from: 'whatsapp:+14155238886',
+                    // Number receiving the message
+                    to: 'whatsapp:+919669660535' //recMobile
+                })
+                    .then(message =>{
+                        console.log("Message sent on whatsapp successfully")
+                        console.log(message)
+                    })
+                    .done();
+
             profile.create({
                 customers: result._id,
                 address1: "",
@@ -129,22 +153,28 @@ exports.Login = async (request, response) => {
     })
         .then(result => {
             if (result.status) {
-                console.log("Then result ", result)
+                // console.log("Then result ", result)
                 const match = bcrypt.compare(password, result.password)
                 console.log("compare res ", match)
                 if (match) {
+                    console.log("result id for customer token : ", result._id)
                     const token = jwt.sign(
-                        {
-                            id: result._id,
+                         {customer:{
+                            _id: result._id,
                             email: result.email
-                        },
+                         }},
                         process.env.TOKEN_KEY,
                         {
                             expiresIn: "2h",
                         }
                     )
-                    // save user token
-                    //   Customer.token = token
+                    customer.updateOne({email: result.email},{$set: {tokens: token, updatedAt: Date.now()}})
+                    .then(result => {
+                        console.log("Token updated successfully")
+                    })
+                    .catch(err => {
+                        console.log("Token could not be updated successfully")
+                    })
                     response.status(200).json({ msg: "Welcome " + result.name + "! Your token is: " + token })
                 }
                 else {
@@ -160,6 +190,29 @@ exports.Login = async (request, response) => {
             return response.status(500).json({ msg: "Invalid Email" })
         })
 }
+
+exports.Logout = (request, response) => {
+    // const {} = request.headers['token']
+    const token = jwt.sign(
+        {
+            email: "",
+            id: ""
+        },
+        process.env.TOKEN_KEY,
+        {
+            expiresIn: 1,
+        }
+    )
+    customer.updateOne({tokens: request.headers["token"]},{$set: {tokens: token}})
+                    .then(result => {
+                        console.log("Token updated successfully")
+                    })
+                    .catch(err => {
+                        console.log("Token could not be updated successfully")
+                    })
+    return response.status(200).json({ msg: "Logged out successfully. Token Is: ", token })
+}
+
 
 exports.forgotPassword = async (request, response) => {
     const errors = validationResult(request)
