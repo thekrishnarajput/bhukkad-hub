@@ -5,9 +5,9 @@ const nodemailer = require('nodemailer')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-const id = 'ACdf149fd0a805582d3bb78b98b26ddd12'
-const twilioToken = '9624c050222ef952f239b324b8926f26'
-const client = require('twilio')(id, twilioToken);
+// const id = 'ACdf149fd0a805582d3bb78b98b26ddd12'
+// const twilioToken = '9624c050222ef952f239b324b8926f26'
+// const client = require('twilio')(id, twilioToken);
 
 const customer = require('../../model/customer/customerModel')
 const profile = require('../../model/customer/customerProfileModel')
@@ -68,6 +68,7 @@ exports.Register = async (request, response) => {
                 }
             })
             console.log("Customer ID: " + result._id)
+            /*
             const recMobile = "whatsapp:+91"+result.mobile
             console.log("Receiving mobile no.: " + recMobile)
             client.messages.create(
@@ -86,6 +87,7 @@ exports.Register = async (request, response) => {
                         console.log(message)
                     })
                     .done();
+                    */
 
             profile.create({
                 customers: result._id,

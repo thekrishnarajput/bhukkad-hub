@@ -8,6 +8,7 @@ const auth = require('../../middleware/customer/auth')
 const customerController = require('../../controller/customer/customerController')
 const customerProfileController = require('../../controller/customer/customerProfileController')
 const cartController = require('../../controller/customer/cartController')
+const orderController = require('../../controller/customer/orderController')
 
 
 var storage = multer.diskStorage({
@@ -47,10 +48,12 @@ router.post('/add-to-cart', auth, cartController.AddToCart)
 
 router.post('/view-cart', auth, cartController.ViewCart)
 
-router.post('/delete-cart-item/:customerId/:itemId', auth, cartController.DeleteCartItem)
+router.post('/delete-cart-item/:itemId', auth, cartController.DeleteCartItem)
 
 router.post('/delete-cart', auth, cartController.DeleteCart)
 
 router.post('/place-order', auth, orderController.PlaceOrder)
+
+// router.post('/view-orders', auth, orderController.ViewOrder)
 
 module.exports = router

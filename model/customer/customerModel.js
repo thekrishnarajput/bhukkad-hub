@@ -30,12 +30,12 @@ const customerSchema = new mongoose.Schema({
         default: false
     },
     createdAt: {
-        type: Date,
-        default: Date.now(),
+        type: String,
+        default: Date().toString() //toLocaleString()
     },
     updatedAt: {
         type: Date,
-        default: Date.now(),
+        default: Date('August 19, 1975 23:15:30 GMT+05:30'),
     },
     otp: {
         type: String

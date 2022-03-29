@@ -1,31 +1,38 @@
 const { json } = require('body-parser')
 const { validationResult } = require('express-validator')
+const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const Cart = require('../../model/customer/cartModel')
 // console.clear()
 exports.AddToCart = async (request, response) => {
     const customerId = request.customer._id
-    console.log("Customer Id: ", customerId)
-    const check = await Cart.findOne({ customer: customerId});
-    console.log("Cart.findOne check: "+check)
-    const dishItems = request.body.dishItems
-    console.log('DishItems: ', dishItems)
+    // console.log("Customer Id: ", customerId)
+    var check = await Cart.findOne({ customer: customerId});
+    // console.log("Cart.findOne check: "+check)
+    const dishId = request.body.dishItems
+    // console.log('DishItems: ', dishId)
+    
     if(!check){
-        await Cart.create({
-            customer: customerId,
-            dishItems: dishItems
-        })
-        .then(result => {
-            // console.log("add to cart result: ", result)
-            return response.status(200).json(result)
-        })
-        .catch(error => {
-            console.log("add to cart error: ", error)
-            return response.status(500).json({msg: "Could not added to cart "})
+        check = new Cart({
+            customer: customerId
         })
     }
-     dishItems.unshift(request.body.dishItems);
-     check.save().then(result => {
+    check.dishItems.push(dishId)
+    await check.save()
+    .then(result => {
+        // const token = jwt.sign(
+        //     {
+        //         cartToken:
+        //         {
+        //             _id: result._id
+        //         }
+        //     },
+        //     process.env.CART_TOKEN_KEY,
+        //     {
+        //         expiresIn: "2h",
+        //     }
+        //     )
+        //     console.log("add to cart token: ", token)
          console.log("Check save: "+result);
          return response.status(200).json(result)
      }).catch(err => {
@@ -47,8 +54,10 @@ exports.ViewCart = async (request, response) => {
 }
 
 exports.DeleteCartItem = async (request, response) => {
-    const {itemId, customerId} = request.params
-    await Cart.updateOne({_id: customerId},
+    const {itemId} = request.params
+    const customerId = request.customer._id
+    console.log("Customer Id from token: " + customerId)
+    await Cart.updateOne({customer: customerId},
         {
             $pullAll:
             {

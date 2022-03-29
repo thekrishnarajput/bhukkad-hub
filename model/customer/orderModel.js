@@ -3,11 +3,9 @@ const mongoose = require('mongoose')
 const orderSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
     },
     mobile: {
         type: String,
-        required: true,
         trim: true,
         min: 10,
         max: 10
@@ -27,14 +25,19 @@ const orderSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'customers'
     },
-    dishItems: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'dishes'
-    }],
-    createdAt: {
+    // dishItems: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'dishes'
+    // }],
+    orderItems: [
+        {
+            type: Object,
+        }
+    ],
+    orderedAt: {
         type: Date,
-        default: Date.now(),
-    }
+        default: Date('August 19, 1975 23:15:30 GMT+05:30')
+    },
 })
 
 module.exports = mongoose.model("orders", orderSchema)

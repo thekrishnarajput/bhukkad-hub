@@ -44,8 +44,7 @@ exports.editDish = async (request, response) => {
     {
       $set: {
         dishName: dishName,
-        dishImage:
-          "https://bhukkad-hub.herokuapp.com/admin/dish/media/" + filename,
+        dishImage: "https://bhukkad-hub.herokuapp.com/admin/dish/media/" + filename,
         dishPrice: dishPrice,
         dishDescription: dishDescription,
       },
