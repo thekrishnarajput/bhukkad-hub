@@ -1,10 +1,11 @@
 const express = require('express')
-require('./database/database')
 require('dotenv').config()
 const cors = require('cors')
 const path = require('path')
 const bodyParser = require('body-parser')
 const app = express()
+require('./database/database')
+
 
 const adminRoute = require('./routes/admin/adminRoute')
 const customerRoute = require('./routes/customer/customerRoute')
